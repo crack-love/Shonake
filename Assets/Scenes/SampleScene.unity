@@ -894,7 +894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61b51cd53ca03cb40942a1309845fb22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_engineDeltaTime: 0.0078747
-  m_gameDeltaTime: 0.0078747
+  m_engineDeltaTime: 0.003149
+  m_gameDeltaTime: 0.003149
   m_gameTimeScale: 1
   m_editorUpdate: 0
