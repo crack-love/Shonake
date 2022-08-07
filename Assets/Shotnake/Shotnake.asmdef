@@ -1,0 +1,17 @@
+{
+    "name": "Shotnake",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ad29643069d8f0a498f6eaf5b316b69f",
+        "GUID:2bfcc239ece1fd64a80a8852bbcd6caf"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
