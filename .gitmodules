@@ -1,0 +1,4 @@
+[submodule "Assets/UnityCommon"]
+	path = Assets/UnityCommon
+	url = https://github.com/crack-love/UnityCommon
+	branch = master
