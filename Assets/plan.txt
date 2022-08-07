@@ -1,18 +1,2 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class t.txt : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}
+타임 매니저
+인풋 매니저
