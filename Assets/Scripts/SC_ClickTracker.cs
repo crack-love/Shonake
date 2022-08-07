@@ -23,7 +23,7 @@ public class SC_ClickTracker : MonoBehaviour, IPointerDownHandler, IDragHandler,
     Vector2 inputAxis = Vector2.zero;
     bool holding = false;
     bool clicked = false;
-
+    
     void Start()
     {
         //Add this button to the list
