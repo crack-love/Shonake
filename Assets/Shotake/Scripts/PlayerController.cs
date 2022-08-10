@@ -5,9 +5,13 @@ namespace Shotake
     public class PlayerController : MonoBehaviour
     {
         public float m_moveSpeed;
+        public float m_rotSpeedAtFast;
+        public float m_rotSpeedAtSlow;
         public GameObject m_player;
+        public GameObject m_cameraHolder;
 
         Joystick m_joystick;
+        public float m_angle;
 
         private void Start()
         {
@@ -17,58 +21,26 @@ namespace Shotake
         private void Update()
         {
             Vector2 axis = m_joystick.GetAxis();
-            transform.Translate(axis * m_moveSpeed * TimeManager.Instance.GameDeltaTime);
+            if (Mathf.Abs(axis.x) > 0 || Mathf.Abs(axis.y) > 0)
+            {
+                var axisMag = axis.magnitude;
+                var deltaTime = TimeManager.Instance.GameDeltaTime;
+
+                // rotate
+                var desireAngle = Vector2.SignedAngle(new Vector2(0, 1), axis);
+                var angleDiff = Mathf.DeltaAngle(m_angle, desireAngle);
+                angleDiff %= Mathf.Lerp(m_rotSpeedAtSlow, m_rotSpeedAtFast, axisMag) * deltaTime;
+                m_angle += angleDiff;
+                transform.rotation = Quaternion.Euler(0, -m_angle, 0);
+
+                // move
+                float moveDelta = axisMag * m_moveSpeed * deltaTime;
+                transform.position += transform.forward * moveDelta;
+                m_cameraHolder.transform.position = transform.position + new Vector3(0, m_cameraHolder.transform.position.y, 0);
+
+                //m_player.GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * moveDelta);
+                //m_player.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(0, -m_angle, 0));
+            }
         }
-        //public float MoveSpeedMps = 7.5f;
-        //public Camera PlayerCamera;
-
-        //void Start()
-        //{        
-        //    // Lock cursor
-        //    Cursor.lockState = CursorLockMode.Locked;
-        //    Cursor.visible = false;
-        //}
-
-        //void Update()
-        //{
-        //    // We are grounded, so recalculate move direction based on axes
-        //    Vector3 forward = transform.TransformDirection(Vector3.forward);
-        //    Vector3 right = transform.TransformDirection(Vector3.right);
-        //    // Press Left Shift to run
-        //    bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        //    float curSpeedX = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Vertical") : 0;
-        //    float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
-        //    float movementDirectionY = moveDirection.y;
-        //    moveDirection = (forward * curSpeedX) + (right * curSpeedY);
-
-        //    if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
-        //    {
-        //        moveDirection.y = jumpSpeed;
-        //    }
-        //    else
-        //    {
-        //        moveDirection.y = movementDirectionY;
-        //    }
-
-        //    // Apply gravity. Gravity is multiplied by deltaTime twice (once here, and once below
-        //    // when the moveDirection is multiplied by deltaTime). This is because gravity should be applied
-        //    // as an acceleration (ms^-2)
-        //    if (!characterController.isGrounded)
-        //    {
-        //        moveDirection.y -= gravity * Time.deltaTime;
-        //    }
-
-        //    // Move the controller
-        //    characterController.Move(moveDirection * Time.deltaTime);
-
-        //    // Player and Camera rotation
-        //    if (canMove)
-        //    {
-        //        rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
-        //        rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-        //        playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-        //        transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
-        //    }
-        //}
     }
 }
