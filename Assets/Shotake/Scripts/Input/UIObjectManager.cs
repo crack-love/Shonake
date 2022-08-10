@@ -24,9 +24,26 @@ namespace Shotake
             return null;
         }
 
+        public T GetObject<T>(string name) where T : UIObject
+        {
+            foreach(UIObject o in m_objects)
+            {
+                if (name == o.UIName)
+                {
+                    return (T)o;
+                }
+            }
+            return null;
+        }
+
         public UIObject GetObject(int idx)
         {
             return m_objects[idx];
+        }
+
+        public T GetObject<T>(int idx) where T : UIObject
+        {
+            return (T)m_objects[idx];
         }
 
         public int AddObject(UIObject o)
@@ -49,19 +66,33 @@ namespace Shotake
         [CustomEditor(typeof(UIObjectManager))]
         class UIObjectManagerEditor : Editor
         {
+            List<GUIContent> m_guicontents = new List<GUIContent>();
+
             public override void OnInspectorGUI()
             {
                 var target = (UIObjectManager)this.target;
+                m_guicontents.SetSize(target.m_objects.Count);
 
                 if (target.m_objects.Count > 0)
                 {
                     GUILayout.BeginVertical();
                     GUILayout.Label("Registed Objects");
-                    foreach (UIObject o in target.m_objects)
+                    for (int i = 0; i < target.m_objects.Count; ++i)
                     {
+                        var o = target.m_objects[i];
+
+                        // update guicontents
+                        if (m_guicontents[i] == null)
+                        {
+                            m_guicontents[i] = new GUIContent();
+                        }
+                        if (o.UIName != m_guicontents[i].text)
+                        {
+                            m_guicontents[i].text = o.UIIndex + " " + o.UIName;
+                        }
+
                         GUILayout.BeginHorizontal();
-                        GUILayout.Label("Index : " + o.UIIndex, GUILayout.Width(100));
-                        if (GUILayout.Button(o.UIName, GUILayout.ExpandWidth(true)))
+                        if (GUILayout.Button(m_guicontents[i], GUILayout.ExpandWidth(true)))
                         {
                             EditorGUIUtility.PingObject(o);
                         }
