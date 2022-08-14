@@ -11,7 +11,8 @@ namespace Shotake
     class UIObjectManager : MonobehaviourSingletone<UIObjectManager>
     {
         List<UIObject> m_objects = new List<UIObject>();
-        
+
+        // todo : get object as type or index or name or tag
         public UIObject GetObject(string name)
         {
             foreach (UIObject o in m_objects)

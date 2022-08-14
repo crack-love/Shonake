@@ -1,5 +1,4 @@
 0. mobile game framework
-
 google profile
 ad
 ranking
@@ -7,14 +6,52 @@ share insta...etc
 iap (in app purchase) remove ad 2~7$
 daily login = need cloud server? firebase?  람다,펑션 / 스토리지,cdn / nosql,logging / 파베,앰파?
 
-게임 플레이
-모바일
-로그라이크
-스네이크
+
+
+
+1. game play
+
+맵 (2d)
+	환경 데코
+	페를린 생성 or 모듈식?
+	적/아이템 스폰 (사인파서클? 패턴?)
+
+맵 세션
+	웨이브
+	클리어
+
+아이템
+	사과
+	hp, exp
+
 적
-먹이
-유물
-레벨
-퍼머프로필
-장애물
-스테이지
+	ai(간단하게 플레이어에게 직진 or use navmesh for complex map?)
+	hp, exp...
+	보스?
+
+플레이어(세션)
+	hp
+	exp
+	ap(apple)
+	레벨업,카드선택
+		
+뱀(그래픽)
+	사이즈 그로우
+	꼬리로 갈수록 줄어드는 사이즈(커브)
+
+유아이
+	킬메시지(+1 exp,)
+	아이템메시지(+1apple, ... +n hp)
+	
+세션 통계
+
+테스트
+	네브메쉬 + 적 + 3D 환경
+	2D 엠티환경 or 다각 or 홀 환경
+
+
+2. 구현 로직
+
+적은 네브메쉬 이용
+플레이어는 네브메쉬? OK
+

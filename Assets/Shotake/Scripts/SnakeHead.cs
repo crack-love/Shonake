@@ -49,6 +49,8 @@ namespace Shotake
             if (item != null)
             {
                 var o = Instantiate(tailPrefab);
+                o.transform.localScale *= 1 - tails.Count * 0.1f;
+
                 if (tails.Count > 0)
                 {
                     o.transform.position = tails[tails.Count - 1].SpawnPositionTransform.position;
