@@ -11,6 +11,7 @@ namespace Shotake
     [RequireComponent(typeof(NavMeshAgent))]
     class PTNavmeshEnemy : MonoBehaviour
     {
+        public GameObject player;
         public NavMeshAgent agent;
 
         private void Awake()
@@ -20,9 +21,10 @@ namespace Shotake
 
         private void Update()
         {
-            var player = PlayerController.Instance.GetPlayerObject();
-
-            agent.SetDestination(player.transform.position);
+            if (player)
+            {
+                agent.SetDestination(player.transform.position);
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ using UnityEngine.AI;
 namespace Shotake
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    class NavmeshPlayerController : MonobehaviourSingletone<NavmeshPlayerController>
+    class NavmeshPlayerController : PlayerController
     {
         //public Transform camHolder;
         public NavMeshAgent m_playerAgent;

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityCommon;
+using System.Collections.Generic;
 
 namespace Shotake
 {
@@ -8,12 +9,9 @@ namespace Shotake
     /// </summary>
     class GameManager : MonobehaviourSingletone<GameManager>
     {
-        PlayerController m_playerControllerPrefab;
-        CameraController m_cameraControllerPrefab;
-
-        void Awake()
-        {
-
-        }
+        public PlayerController PlayerController;
+        public CameraController CameraController;
+        public PlayerState PlayerStates;
+        public Player Players;
     }
 }

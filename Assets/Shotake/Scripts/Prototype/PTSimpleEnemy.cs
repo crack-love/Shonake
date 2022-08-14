@@ -5,11 +5,11 @@ namespace Shotake
 {
     class PTSimpleEnemy : MonoBehaviour
     {
+        public GameObject player;
         public float speed = 3;
 
         void Update()
         {
-            var player = PlayerController.Instance.GetPlayerObject();
             if (player)
             {
                 transform.Translate(speed * Time.deltaTime * (player.transform.position - transform.position).normalized);
