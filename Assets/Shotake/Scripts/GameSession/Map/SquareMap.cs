@@ -1,4 +1,6 @@
-﻿using UnityCommon;
+﻿using Codice.CM.WorkspaceServer.Tree.GameUI.Checkin.Updater;
+using UnityCommon;
+using UnityEditor.AI;
 using UnityEngine;
 
 namespace Shotake
@@ -16,6 +18,7 @@ namespace Shotake
             m_floor.transform.localPosition = new Vector3(0, -YSize/2f, 0);
             m_floor.transform.localScale = new Vector3(m_width, YSize, m_height);
             gameObject.isStatic = true;
+            m_floor.isStatic = true;
         }
 
         private void Reset()

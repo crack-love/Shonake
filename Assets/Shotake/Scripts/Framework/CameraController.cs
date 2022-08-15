@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityCommon;
+using UnityEngine;
 
 namespace Shotake
 {   
-    class CameraController : MonobehaviourSingletone<CameraController>
+    abstract class CameraController : MonoBehaviour
     {
 
     }

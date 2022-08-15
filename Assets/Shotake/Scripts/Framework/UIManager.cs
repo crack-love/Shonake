@@ -8,16 +8,18 @@ using UnityEditor;
 
 namespace Shotake
 {
-    class UIObjectManager : MonobehaviourSingletone<UIObjectManager>
+    class UIManager : MonobehaviourSingletone<UIManager>
     {
         List<UIObject> m_objects = new List<UIObject>();
 
-        // todo : get object as type or index or name or tag
-        public UIObject GetObject(string name)
+        /// <summary>
+        /// Name is UnityEngine Object's name
+        /// </summary>
+        public UIObject GetObjectByName(string name)
         {
             foreach (UIObject o in m_objects)
             {
-                if (name == o.UIName)
+                if (o.name == name)
                 {
                     return o;
                 }
@@ -25,30 +27,33 @@ namespace Shotake
             return null;
         }
 
-        public T GetObject<T>(string name) where T : UIObject
+        public UIObject GetObjectByIndex(int index)
         {
-            foreach(UIObject o in m_objects)
+            if (m_objects.Count < index)
             {
-                if (name == o.UIName)
+                return m_objects[index];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public T GetObjectByType<T>() where T : class
+        {
+            foreach (UIObject o in m_objects)
+            {
+                if (o is T t)
                 {
-                    return (T)o;
+                    return t;
                 }
             }
             return null;
         }
 
-        public UIObject GetObject(int idx)
-        {
-            return m_objects[idx];
-        }
-
-        public T GetObject<T>(int idx) where T : UIObject
-        {
-            return (T)m_objects[idx];
-        }
-
         public int AddObject(UIObject o)
         {
+            Debug.Log(o.name + " Added");
             m_objects.Add(o);
             return m_objects.Count - 1;
         }
@@ -64,33 +69,35 @@ namespace Shotake
         }
 
 #if UNITY_EDITOR
-        [CustomEditor(typeof(UIObjectManager))]
+        [CustomEditor(typeof(UIManager))]
         class UIObjectManagerEditor : Editor
         {
-            List<GUIContent> m_guicontents = new List<GUIContent>();
+            List<GUIContent> m_guicontents;
+
+            private void OnEnable()
+            {
+                m_guicontents = new List<GUIContent>();
+                var target = base.target as UIManager;
+                if (target && target.m_objects != null)
+                {
+                    for (int i = 0; i < target.m_objects.Count; ++i)
+                    {
+                        m_guicontents.Add(new GUIContent(i + " " + target.m_objects[i].name));
+                    }
+                }
+            }
 
             public override void OnInspectorGUI()
             {
-                var target = (UIObjectManager)this.target;
-                m_guicontents.SetSize(target.m_objects.Count);
+                var target = (UIManager)this.target;
 
                 if (target.m_objects.Count > 0)
                 {
                     GUILayout.BeginVertical();
-                    GUILayout.Label("Registed Objects");
+                    GUILayout.Label("Objects");
                     for (int i = 0; i < target.m_objects.Count; ++i)
                     {
                         var o = target.m_objects[i];
-
-                        // update guicontents
-                        if (m_guicontents[i] == null)
-                        {
-                            m_guicontents[i] = new GUIContent();
-                        }
-                        if (o.UIName != m_guicontents[i].text)
-                        {
-                            m_guicontents[i].text = o.UIIndex + " " + o.UIName;
-                        }
 
                         GUILayout.BeginHorizontal();
                         if (GUILayout.Button(m_guicontents[i], GUILayout.ExpandWidth(true)))

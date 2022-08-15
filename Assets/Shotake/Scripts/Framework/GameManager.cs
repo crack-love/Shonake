@@ -7,11 +7,19 @@ namespace Shotake
     /// <summary>
     /// manage a game sesstion from start to end
     /// </summary>
-    class GameManager : MonobehaviourSingletone<GameManager>
+    abstract class GameManager : MonobehaviourSingletone<GameManager>
     {
-        public PlayerController PlayerController;
-        public CameraController CameraController;
-        public PlayerState PlayerStates;
-        public Player Players;
+        [SerializeField] PlayerController m_playerController;
+        [SerializeField] CameraController m_cameraController;
+        [SerializeField] PlayerState m_playerState;
+        [SerializeField] Player m_player;
+
+        public PlayerController PlayerController => m_playerController;
+
+        public CameraController CameraController => m_cameraController;
+
+        public PlayerState PlayerState => m_playerState;
+
+        public Player Player => m_player;
     }
 }
