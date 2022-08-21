@@ -35,12 +35,12 @@ namespace Shotake
             var actualCamSize = m_desireCamSize;
             if (m_scrollSmoothTime > 0)
             {
-                var dt = TimeManager.Instance.GameDeltaTime;
+                var dt = TimeManager.Instance.DeltaTime;
                 desirePos = Vector3.Lerp(m_camHolder.position, desirePos, dt / m_scrollSmoothTime);
             }
             if (m_zoomSmoothTime > 0)
             {
-                var dt = TimeManager.Instance.GameDeltaTime;
+                var dt = TimeManager.Instance.DeltaTime;
                 actualCamSize = Mathf.Lerp(m_cam.orthographicSize, m_desireCamSize, dt / m_zoomSmoothTime);
             }
 

@@ -7,15 +7,22 @@ using UnityEngine;
 
 namespace Shotake
 {
-    abstract class SnakeComponent : MonoBehaviour, ISnakeCaptureTarget
+    abstract class SnakeComponent : MonoBehaviour, ISnakeCaptureTarget2
     {
-        [SerializeField] Transform m_lookablePosition;
+        [SerializeField] Transform m_lookingPosition;
+        [SerializeField] Transform m_lookedPosition;
 
-        public Transform SpawnPositionTrans => m_lookablePosition;
+        Transform ISnakeCaptureTarget2.GetBegPosition()
+        {
+            return m_lookingPosition;
+        }
 
-        public abstract float GetComponentWidth();
+        Transform ISnakeCaptureTarget2.GetEndPosition()
+        {
+            return m_lookedPosition;
+        }
 
-        Transform ISnakeCaptureTarget.GetTransform()
+        Transform ISnakeCaptureTarget2.GetTransform()
         {
             return transform;
         }

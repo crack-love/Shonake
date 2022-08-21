@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Shotake
 {
-    sealed class Joystick : UIObject, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    sealed class Joystick : UIObject, IPointerDownHandler, IDragHandler, IPointerUpHandler, IAxisProvider
     {
         [SerializeField] float m_range = 1;
         [SerializeField] float m_threshold = 0.1f;

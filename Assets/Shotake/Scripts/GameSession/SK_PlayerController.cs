@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,79 +20,81 @@ namespace Shotake
 
         Joystick m_joystick;
         SK_Player m_player;
-        public float m_angle = 0;
+        float m_angle;
 
-        void Start()
+        void ValidateReferences()
         {
-            m_joystick = UIManager.Instance.GetObjectByType<Joystick>();
-            m_player = GameManager.Instance.Player as SK_Player;
-            m_angle = m_player.transform.rotation.eulerAngles.y;
+            if (!m_player)
+            {
+                m_player = GameManager.Instance.Player as SK_Player;
+                m_angle = m_player.transform.rotation.eulerAngles.y;
+            }
+
+            if (!m_joystick) m_joystick = UIManager.Instance.GetObjectByType<Joystick>();
         }
 
-        // update rotation from code, calc path from agent
         private void Update()
         {
-            if (!m_player) m_player = GameManager.Instance.Player as SK_Player;
-            if (!m_joystick) m_joystick = UIManager.Instance.GetObjectByType<Joystick>();
+            ValidateReferences();
 
             if (m_player && m_joystick)
             {
                 var agent = m_player.NavMeshAgent;
+                var axis = m_joystick.GetAxis();
+
                 if (agent)
                 {
-                    agent.updateRotation = false;
-                    agent.updateUpAxis = false;
-
-                    var axis = m_joystick.GetAxis();
-                    if (axis == default)
-                    {
-                        agent.velocity = default;
-                        agent.SetDestination(agent.transform.position);
-                    }
-                    else
-                    {
-                        var dt = TimeManager.Instance.GameDeltaTime;
-
-                        // rotate
-                        var axisMag = axis.magnitude;
-                        var desireAngle = Vector2.SignedAngle(new Vector2(0, 1), axis);
-                        var angleDiff = Mathf.DeltaAngle(m_angle, desireAngle);
-                        var angleAccel = Mathf.Lerp(m_rotSpeedAtSlow, m_rotSpeedAtFast, axisMag) * dt;
-                        angleDiff %= angleAccel;
-                        m_angle = (m_angle + angleDiff + 360) % 360;
-                        agent.transform.rotation = Quaternion.Euler(0, -m_angle, 0);
-
-                        // move
-                        agent.SetDestination(agent.transform.position + agent.transform.forward * m_pathfindingDistance);
-                        agent.velocity = axis.magnitude * m_speed * agent.desiredVelocity.normalized;
-                    }
+                    UpdateMovement(agent, axis);
                 }
             }
         }
 
-        private void UpdateNavmeshOnlyVersion()
+        void UpdateMovement(NavMeshAgent agent, Vector2 axis2d)
         {
-            if (!m_player) m_player = GameManager.Instance.Player as SK_Player;
+            // 로테이션 : 앵글 프로퍼티로 직접 수정
+            // 속도 : 직접 설정 (엑시스 속력)
+            // 목표 지점 : 포워드 + 정적오프셋
+            // 레이케스트로 블럭 확인 -> 이동 금지
+            // 인벨리드 패스 확인 -> 이동 금지
 
-            if (m_joystick && m_player)
+            if (axis2d == default)
             {
-                Vector2 axis2d = m_joystick.GetAxis();
-                Vector3 axis = new Vector3(axis2d.x, 0, axis2d.y);
+                agent.velocity = Vector3.zero;
+            }
+            else
+            {
+                // angle
+                var axisMag = axis2d.magnitude;
+                var angle = Vector2.SignedAngle(axis2d, Vector2.up);
+                var rotSpeed = Mathf.Lerp(m_rotSpeedAtSlow, m_rotSpeedAtFast, axisMag);
+                m_angle += Mathf.DeltaAngle(m_angle, angle) % (rotSpeed * Time.deltaTime);
+                m_angle %= 360;
+                agent.updateRotation = false;
+                agent.updateUpAxis = true;
+                agent.transform.rotation = Quaternion.Euler(0, m_angle, 0);
 
-                if (axis == default)
+                // check raycast
+                if (Physics.Raycast(agent.transform.position, agent.transform.forward, out var hit, m_pathfindingDistance))
                 {
-                    m_player.NavMeshAgent.SetDestination(m_player.transform.position);
-                    m_player.NavMeshAgent.velocity = default;
+                    Debug.DrawRay(agent.transform.position, agent.transform.forward * m_pathfindingDistance, Color.red);
+                    agent.velocity = Vector3.zero;
+                    return;
                 }
                 else
                 {
-                    var desireDir = axis.normalized;
-                    var desirePos = m_player.transform.position + desireDir * m_pathfindingDistance;
-                    var desireSpeed = axis.magnitude * m_speed;
-                    m_player.NavMeshAgent.SetDestination(desirePos);
-                    m_player.NavMeshAgent.velocity = m_player.NavMeshAgent.desiredVelocity.normalized * desireSpeed;
-                    //m_player.transform.rotation = Quaternion.RotateTowards(m_player.transform.rotation, Quaternion.Euler(desireDir), 360);
+                    Debug.DrawRay(agent.transform.position, agent.transform.forward * m_pathfindingDistance, Color.green);
                 }
+
+                // check incalculate path
+                var path = agent.path;
+                if (!agent.CalculatePath(agent.transform.position + agent.transform.forward * m_pathfindingDistance, path))
+                {
+                    agent.velocity = Vector3.zero;
+                    return;
+                }
+
+                // velocity
+                agent.velocity = agent.transform.forward * m_speed * axisMag;
             }
         }
     }

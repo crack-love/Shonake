@@ -26,7 +26,7 @@ namespace Shotake
             get => m_engineDeltaTime;
         }
 
-        public float GameDeltaTime
+        public float DeltaTime
         {
             get => m_gameDeltaTime;
         }

@@ -23,11 +23,11 @@ namespace Shotake
         public List<SnakeTail> tails = new List<SnakeTail>();
         SK_CameraController m_camCon;
 
-        SnakeCaptureSolver m_captureSolver;
+        SnakeCaptureSolver2 m_captureSolver;
 
         void Awake()
         {
-            m_captureSolver = new SnakeCaptureSolver(0.5f, 2, 100, this);
+            m_captureSolver = new SnakeCaptureSolver2(0.5f, 50, transform.position);
         }
 
         private void Start()
@@ -50,14 +50,13 @@ namespace Shotake
 
         private void Update()
         {
-            var temp = ListPool<ISnakeCaptureTarget>.Get();
-            tails.Cast<ISnakeCaptureTarget>().ToList(temp);
-
-            m_captureSolver.CaptureCurrent(this);
-            m_captureSolver.SolveCurrent(this, temp);
-            m_captureSolver.DrawDebug();
-
-            temp.ClearReturn();
+            if (m_captureSolver != null)
+            {
+                m_captureSolver.CaptureHead(this);
+                m_captureSolver.Solve(this, tails.Cast<ISnakeCaptureTarget2>());
+                m_captureSolver.DrawDebug();
+                m_captureSolver.DrawDebugTails(this, tails.Cast<ISnakeCaptureTarget2>());
+            }
         }
 
         private void OnTriggerEnter(Collider other)
@@ -69,18 +68,14 @@ namespace Shotake
             if (item != null)
             {
                 var o = Instantiate(tailPrefab);
-
                 tails.Add(o.GetComponent<SnakeTail>());
+
+                //o.transform.localScale = Vector3.Max(transform.localScale - Vector3.one * tails.Count * 0.1f, Vector3.one * 0.1f);
 
                 Destroy(item.gameObject);
 
                 UpdateCameraSize();
             }
-        }
-
-        public override float GetComponentWidth()
-        {
-            return 2f;
         }
     }
 }

@@ -9,6 +9,10 @@ namespace Shotake
         Transform GetTransform();
 
         float GetComponentWidth();
+
+        Transform GetLookingPosition();
+
+        Transform GetLookedPsition();
     }
 
     class SnakeCaptureSolver
@@ -84,7 +88,25 @@ namespace Shotake
                         {
                             var newpos = Vector3.Lerp(m_captures[cidx].Position, m_captures[ncidx].Position, headDelta);
                             var newrot = Quaternion.Lerp(m_captures[cidx].Rotation, m_captures[ncidx].Rotation, headDelta);
-                            trans.SetPositionAndRotation(newpos, newrot);
+                            //trans.SetPositionAndRotation(newpos, newrot);
+                            trans.position = newpos;
+
+                            float angle = 0;
+                            if (i > 0)
+                            {
+                                angle = Vector3.SignedAngle(
+                                    tails[i].GetLookingPosition().position - tails[i].GetTransform().position,
+                                    tails[i - 1].GetLookedPsition().position - tails[i].GetTransform().position,
+                                    new Vector3(0, 1, 0));
+                            }
+                            else if (i == 0)
+                            {
+                                angle = Vector3.SignedAngle(
+                                    tails[i].GetLookingPosition().position - tails[i].GetTransform().position,
+                                    head.GetLookedPsition().position - tails[i].GetTransform().position,
+                                    new Vector3(0, 1, 0));
+                            }
+                            trans.rotation = Quaternion.Euler(0, trans.eulerAngles.y + angle / 2f, 0);
                         }
 
                         widthSum += tails[i].GetComponentWidth();
