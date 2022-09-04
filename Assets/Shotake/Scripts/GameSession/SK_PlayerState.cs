@@ -1,13 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shotake
 {
+    /// <summary>
+    /// sessionState
+    /// </summary>
     class SK_PlayerState : PlayerState
     {
+        public float m_hp;
+        public float m_exp;
 
+        public float HP
+        {
+            get => m_hp;
+            set
+            {
+                m_hp = value;
+                m_hp = MathF.Max(m_hp, 0);
+            }
+        }
     }
 }

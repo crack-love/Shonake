@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets;
+using UnityEngine;
 
 namespace Shotake
 {
@@ -16,10 +17,10 @@ namespace Shotake
         {
             if (other != null && other.gameObject)
             {
-                var td = other.GetComponent<IDamageTakable>();
-                if (td != null)
+                var e = other.GetComponent<Enemy>();
+                if (e)
                 {
-                    td.TakeDamage(gameObject, m_instanter, m_damage, m_damageLayer);
+                    e.TakeDamage(gameObject, m_instanter, m_damage, m_damageLayer);
                     Destroy(gameObject);
                 }
             }

@@ -28,10 +28,9 @@ namespace Shotake
             }
 #endif
 
-            ValidateID();
-
-            Vector3 v3ppos = GameManager.Instance.Player?.transform.position ?? Vector3.zero;
-            Shader.SetGlobalVector(PlayerPositionID, new UnityEngine.Vector4(v3ppos.x, v3ppos.y, v3ppos.z, 1));
+            //ValidateID();
+            //Vector3 v3ppos = GameManager.Instance.Player?.transform.position ?? Vector3.zero;
+            //Shader.SetGlobalVector(PlayerPositionID, new UnityEngine.Vector4(v3ppos.x, v3ppos.y, v3ppos.z, 1));
         }
     }
 }

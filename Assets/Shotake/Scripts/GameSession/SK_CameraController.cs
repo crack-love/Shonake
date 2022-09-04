@@ -23,29 +23,35 @@ namespace Shotake
         {
             if (!m_playerTrans)
             {
-                m_playerTrans = GameManager.Instance.Player.transform;
+                if (GameManager.Instance.Player)
+                {
+                    m_playerTrans = GameManager.Instance.Player.transform;
+                }
             }
             if (!m_cam)
             {
                 m_cam = m_camHolder.GetComponentInChildren<Camera>();
             }
 
-            Vector3 desirePos = m_playerTrans.position;
-            desirePos.y = m_camHolder.position.y;
-            var actualCamSize = m_desireCamSize;
-            if (m_scrollSmoothTime > 0)
+            if (m_playerTrans)
             {
-                var dt = TimeManager.Instance.DeltaTime;
-                desirePos = Vector3.Lerp(m_camHolder.position, desirePos, dt / m_scrollSmoothTime);
-            }
-            if (m_zoomSmoothTime > 0)
-            {
-                var dt = TimeManager.Instance.DeltaTime;
-                actualCamSize = Mathf.Lerp(m_cam.orthographicSize, m_desireCamSize, dt / m_zoomSmoothTime);
-            }
+                Vector3 desirePos = m_playerTrans.position;
+                desirePos.y = m_camHolder.position.y;
+                var actualCamSize = m_desireCamSize;
+                if (m_scrollSmoothTime > 0)
+                {
+                    var dt = TimeManager.Instance.DeltaTime;
+                    desirePos = Vector3.Lerp(m_camHolder.position, desirePos, dt / m_scrollSmoothTime);
+                }
+                if (m_zoomSmoothTime > 0)
+                {
+                    var dt = TimeManager.Instance.DeltaTime;
+                    actualCamSize = Mathf.Lerp(m_cam.orthographicSize, m_desireCamSize, dt / m_zoomSmoothTime);
+                }
 
-            m_camHolder.position = desirePos;
-            m_cam.orthographicSize = actualCamSize;
+                m_camHolder.position = desirePos;
+                m_cam.orthographicSize = actualCamSize;
+            }
         }
 
         public void SetCamSize(float size)

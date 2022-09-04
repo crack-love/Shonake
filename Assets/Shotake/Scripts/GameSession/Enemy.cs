@@ -21,6 +21,7 @@ namespace Assets
         public float m_speed = 5;
         public float m_rotSpeed = 120;
         public float m_pathFindingDelay = 1;
+        public float m_bumpDamage = 1f;
 
         NavMeshAgent m_agent;
         Rigidbody m_rigidbody;
@@ -33,6 +34,21 @@ namespace Assets
             m_rigidbody = GetComponent<Rigidbody>();
             m_rigidbody.isKinematic = true;
             m_rigidbody.hideFlags = HideFlags.HideInInspector;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject)
+            {
+                var p = other.gameObject.GetComponent<SK_Player>();
+                if (p)
+                {
+                    p.TakeDamage(gameObject, gameObject, m_bumpDamage, int.MaxValue);
+
+                    // todo : add velocity to player? or enemy?
+                    // todo : add effect
+                }
+            }
         }
 
         private void Start()
