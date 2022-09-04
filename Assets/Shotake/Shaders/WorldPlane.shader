@@ -14,8 +14,6 @@ Shader "Shotake/WorldPlane"
 		// outline pass
 		Pass
 		{
-            Cull Front
-
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -23,7 +21,6 @@ Shader "Shotake/WorldPlane"
 			struct appdata
 			{
 				float4 vertex : POSITION;
-                float3 normal : NORMAL;
 			};
 
 			struct v2f
@@ -36,12 +33,16 @@ Shader "Shotake/WorldPlane"
 
 			v2f vert(appdata v)
 			{
-				v2f o;               
-                float4 clipPosition = UnityObjectToClipPos(v.vertex);
-                float3 clipNormal = mul((float3x3) UNITY_MATRIX_VP, mul((float3x3) UNITY_MATRIX_M, v.normal));
-                float2 offset = (2 * _OutlineWidth) * normalize(clipNormal.xy) / _ScreenParams.xy;				
-                clipPosition.xy += offset;
-                o.pos = clipPosition;
+				v2f o;             
+                v.vertex.xz *= 1 + _OutlineWidth;
+                v.vertex.y -= 0.05;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                
+                //float4 clipPosition = UnityObjectToClipPos(v.vertex);
+                //float3 clipNormal = mul((float3x3) UNITY_MATRIX_VP, mul((float3x3) UNITY_MATRIX_M, v.normal));
+                //float2 offset = (2 * _OutlineWidth) * normalize(clipNormal.xy) / _ScreenParams.xy;				
+                //clipPosition.xy += offset;
+                //o.pos = clipPosition;
 				return o;
 			}
 

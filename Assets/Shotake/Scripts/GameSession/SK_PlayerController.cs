@@ -74,7 +74,7 @@ namespace Shotake
                 agent.transform.rotation = Quaternion.Euler(0, m_angle, 0);
 
                 // check raycast
-                if (Physics.Raycast(agent.transform.position, agent.transform.forward, out var hit, m_pathfindingDistance))
+                if (Physics.Raycast(agent.transform.position, agent.transform.forward, out var hit, m_pathfindingDistance, int.MaxValue, QueryTriggerInteraction.Ignore))
                 {
                     Debug.DrawRay(agent.transform.position, agent.transform.forward * m_pathfindingDistance, Color.red);
                     agent.velocity = Vector3.zero;
