@@ -15,7 +15,7 @@ namespace Assets
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(NavMeshAgent))]
-    class Enemy : MonoBehaviour
+    class Enemy : MonoBehaviour, IDamageTakable
     {
         public float m_hp = 10;
         public float m_speed = 5;
@@ -46,16 +46,6 @@ namespace Assets
             m_agent.angularSpeed = m_rotSpeed;
         }
 
-        public void AddDamage(float v)
-        {
-            m_hp = Mathf.Max(m_hp - v, 0);
-            if (m_hp <= 0)
-            {
-                StopCoroutine(m_pathfinding);
-                Destroy(gameObject);
-            }
-        }
-
         IEnumerator FindPath()
         {
             while (gameObject)
@@ -70,6 +60,15 @@ namespace Assets
                 }
 
                 yield return new WaitForSeconds(m_pathFindingDelay);
+            }
+        }
+
+        public void TakeDamage(GameObject src, GameObject instanter, float damage, int damageLayer)
+        {
+            m_hp = Mathf.Max(m_hp - damage, 0);
+            if (m_hp <= 0)
+            {
+                Destroy(gameObject);
             }
         }
     }
