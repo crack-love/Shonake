@@ -38,9 +38,24 @@ namespace Assets
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject)
+        //    if (other.gameObject)
+        //    {
+        //        var p = other.gameObject.GetComponent<SK_Player>();
+        //        if (p)
+        //        {
+        //            p.TakeDamage(gameObject, gameObject, m_bumpDamage, int.MaxValue);
+
+        //            // todo : add velocity to player? or enemy?
+        //            // todo : add effect
+        //        }
+        //    }
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject)
             {
-                var p = other.gameObject.GetComponent<SK_Player>();
+                var p = collision.gameObject.GetComponent<SK_Player>();
                 if (p)
                 {
                     p.TakeDamage(gameObject, gameObject, m_bumpDamage, int.MaxValue);
