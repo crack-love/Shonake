@@ -108,6 +108,10 @@ namespace Shotake
                     }
                     GUILayout.EndVertical();
                 }
+                else
+                {
+                    GUILayout.Label("Has no UIObject");
+                }
             }
         }
 #endif
