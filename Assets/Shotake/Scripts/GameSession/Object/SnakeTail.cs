@@ -11,6 +11,9 @@ namespace Shotake
 {
     class SnakeTail : SnakeComponent
     {
-
+        public void SetSize(float size)
+        {
+            transform.localScale = new Vector3(size, 1, size);
+        }
     }
 }

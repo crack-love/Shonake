@@ -12,7 +12,7 @@ namespace Shotake
     // 일시정지
     // 종료
     // 메인 화면으로
-    class StageSessionManager
+    class SK_GameManager : GameManager
     {
 
     }

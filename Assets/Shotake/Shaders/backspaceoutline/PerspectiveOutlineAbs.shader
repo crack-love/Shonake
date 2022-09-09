@@ -1,4 +1,4 @@
-﻿Shader "Shotake/PerspectiveOutlineAbs"
+﻿Shader "Shotake/(obsolete)PerspectiveOutlineAbs"
 {
 	// persp outline (abs or rel pixel)
 	Properties

@@ -1,4 +1,4 @@
-﻿Shader "Shotake/OrthographicOutlineAbs"
+﻿Shader "Shotake/(obsolete)OrthographicOutlineAbs"
 {
 	// ortho outline (abs pixel)
     Properties

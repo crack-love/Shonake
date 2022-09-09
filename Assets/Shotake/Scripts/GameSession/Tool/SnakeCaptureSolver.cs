@@ -1,74 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 
 namespace Shotake
 {
-    interface ISnakeCaptureTarget2
+    // only capture position version 20220816
+    // capture head's position every frame
+    // solve tails
+    class SnakeCaptureSolver : MonoBehaviour
     {
-        Transform GetTransform();
+        public float m_captureGap = 0.5f;
+        public float m_maxDistance = 100;
 
-        Transform GetBegPosition();
-
-        Transform GetEndPosition();
-    }
-
-    // only position version
-    // 20220816
-    class SnakeCaptureSolver2
-    {
-        struct Capture
-        {
-            public Vector3 Position;
-        }
-
-        Capture[] m_captures;
-        float m_captureGap;
+        Vector3[] m_captures;
         int m_lastIndex;
 
-        public struct Initializer
+        public void Initialize(Vector3 headPosition)
         {
-            public float CaptureGap;
-            public float MaxDistance;
-            public Vector3 HeadPosition;
-        }
-
-        public SnakeCaptureSolver2(float captureGap, float maxDistance, Vector3 headPosition)
-        {
-            Assert.IsTrue(captureGap > 0);
-            Assert.IsTrue(maxDistance / captureGap > 2);
-
-            m_captureGap = captureGap;
             m_lastIndex = 0;
 
-            int maxCapSize = Mathf.CeilToInt(maxDistance / captureGap);
-            m_captures = new Capture[maxCapSize];
+            int maxCapSize = Mathf.CeilToInt(m_maxDistance / m_captureGap);
+            m_captures = new Vector3[maxCapSize];
             for (int i = 0; i < maxCapSize; ++i)
             {
-                m_captures[i].Position = headPosition;
+                m_captures[i] = headPosition;
             }
         }
 
-        public void CaptureHead(ISnakeCaptureTarget2 head)
+        public void CaptureHead(ISnakeCaptureTarget head)
         {
             var trans = head?.GetTransform();
             if (trans)
             {
                 var position = trans.position;
                 var lastCap = m_captures[m_lastIndex];
-                var d = (position - lastCap.Position).magnitude;
+                var d = (position - lastCap).magnitude;
 
                 int i = (m_lastIndex + 1) % m_captures.Length;
                 while (d >= m_captureGap)
                 {
-                    m_captures[i].Position = Vector3.Lerp(lastCap.Position, position, m_captureGap / d);
-                    //Rotation = Quaternion.Lerp(lastCap.Rotation, trans.rotation, m_captureGap / d),
+                    m_captures[i] = Vector3.Lerp(lastCap, position, m_captureGap / d);
                     
                     d -= m_captureGap;
                     m_lastIndex = i;
@@ -77,30 +56,33 @@ namespace Shotake
             }
         }
 
-        public void Solve(ISnakeCaptureTarget2 head, IEnumerable<ISnakeCaptureTarget2> tails)
+        public void Solve(ISnakeCaptureTarget head, IEnumerable<ISnakeCaptureTarget> tails)
         {
             if (head != null && tails != null && head.GetTransform() is Transform headTrans)
             {
-                float headOffset = (headTrans.position - m_captures[m_lastIndex].Position).magnitude;
-                float widthSum = (headTrans.position - head.GetEndPosition().position).magnitude;
-                ISnakeCaptureTarget2 prev = head;
+                float headOffset = (headTrans.position - m_captures[m_lastIndex]).magnitude;
+                float widthSum = (headTrans.position - head.GetEndPosition().position).magnitude - headOffset; //(headTrans.position - head.GetEndPosition().position).magnitude - headOffset;
+                ISnakeCaptureTarget prev = head;
 
-                foreach (ISnakeCaptureTarget2 curr in tails)
+                // lerp(currcap, currcap+1, headoffset/gap)
+
+                foreach (ISnakeCaptureTarget curr in tails)
                 {
                     if (curr.GetTransform() is Transform currTrans)
                     {
                         widthSum += (currTrans.position - curr.GetBegPosition().position).magnitude;
-                        
+
+                        float frag = m_captureGap - widthSum % m_captureGap;
                         int capIdx = (m_lastIndex - Mathf.CeilToInt(widthSum / m_captureGap) + m_captures.Length) % m_captures.Length;
                         int ncapIdx = (capIdx + 1) % m_captures.Length;
-                        var newpos = Vector3.Lerp(m_captures[capIdx].Position, m_captures[ncapIdx].Position, headOffset/ m_captureGap);
+                        var newpos = Vector3.Lerp(m_captures[capIdx], m_captures[ncapIdx], frag / m_captureGap);
 
                         // rot
                         var desireDirection = (prev.GetTransform().position + prev.GetEndPosition().position) / 2f - curr.GetEndPosition().position;
                         var desireRotation = Quaternion.LookRotation(desireDirection, Vector3.up);
                         currTrans.rotation = desireRotation;
 
-                        // move
+                        // move (rot first)
                         currTrans.position = newpos;
 
                         widthSum += (currTrans.position - curr.GetEndPosition().position).magnitude;
@@ -110,26 +92,28 @@ namespace Shotake
                 }
             }
         }
-        public void DrawDebug()
+        public void DrawDebugCaptures()
         {
             for (int i = 0; i < m_captures.Length - 1; ++i)
             {
                 int beg = (m_lastIndex - i + m_captures.Length) % m_captures.Length;
                 int end = (m_lastIndex - i - 1 + m_captures.Length) % m_captures.Length;
-                Debug.DrawLine(m_captures[beg].Position, m_captures[end].Position);
+                Debug.DrawLine(m_captures[beg], m_captures[end]);
             }
         }
 
-        public void DrawDebugTails(ISnakeCaptureTarget2 head, IEnumerable<ISnakeCaptureTarget2> tails)
+        public void DrawDebugTails(ISnakeCaptureTarget head, IEnumerable<ISnakeCaptureTarget> tails)
         {
             int i = 0;
             Debug.DrawLine(head.GetBegPosition().position, head.GetEndPosition().position, Color.green);
 
-            foreach (ISnakeCaptureTarget2 target in tails)
+            foreach (ISnakeCaptureTarget target in tails)
             {
                 i += 1;
                 Debug.DrawLine(target.GetBegPosition().position, target.GetEndPosition().position, i % 2 == 0 ? Color.green : Color.yellow);
             }
+
+
         }
     }
 }

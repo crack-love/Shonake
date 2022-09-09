@@ -11,22 +11,24 @@ using UnityEngine.SceneManagement;
 
 namespace Shotake
 {
+    // navmesh player move controller
     class SK_PlayerController : PlayerController
     {
         [SerializeField] float m_pathfindingDistance = 3;
-        [SerializeField] float m_speed = 5;
+        [SerializeField] float m_speedAtSlow = 2;
+        [SerializeField] float m_speedAtFast = 6;
         [SerializeField] float m_rotSpeedAtSlow = 0;
         [SerializeField] float m_rotSpeedAtFast = 180;
 
         Joystick m_joystick;
-        GameObject m_player;
+        SK_Player m_player;
         float m_angle;
 
         void ValidateReferences()
         {
             if (!m_player)
             {
-                m_player = null;//GameManager.Instance.Player;// as SK_Player;
+                m_player = GameManager.Instance.Player as SK_Player;
                 if (m_player)
                 {
                     m_angle = m_player.transform.rotation.eulerAngles.y;
@@ -42,12 +44,12 @@ namespace Shotake
 
             if (m_player && m_joystick)
             {
-                var agent = m_player.GetComponent<NavMeshAgent>();//.NavMeshAgent;
+                var agent = m_player.NavMeshAgent;
                 var axis = m_joystick.GetAxis();
-
+                
                 if (agent)
                 {
-                    UpdateMovement(agent, axis);
+                    UpdateMovement(agent, axis); agent.updateUpAxis = false;
                 }
             }
         }
@@ -55,7 +57,7 @@ namespace Shotake
         void UpdateMovement(NavMeshAgent agent, Vector2 axis2d)
         {
             // 로테이션 : 앵글 프로퍼티로 직접 수정
-            // 속도 : 직접 설정 (엑시스 속력)
+            // 속도 : 에이전트 직접 설정 (엑시스 속력)
             // 목표 지점 : 포워드 + 정적오프셋
             // 레이케스트로 블럭 확인 -> 이동 금지
             // 인벨리드 패스 확인 -> 이동 금지
@@ -77,27 +79,29 @@ namespace Shotake
                 agent.transform.rotation = Quaternion.Euler(0, m_angle, 0);
 
                 // check raycast
-                if (Physics.Raycast(agent.transform.position, agent.transform.forward, out var hit, m_pathfindingDistance, int.MaxValue, QueryTriggerInteraction.Ignore))
+                var raystart = m_player.RaycastPosition;
+                if (Physics.Raycast(raystart, agent.transform.forward, out var hit, m_pathfindingDistance, int.MaxValue, QueryTriggerInteraction.Ignore))
                 {
-                    Debug.DrawRay(agent.transform.position, agent.transform.forward * m_pathfindingDistance, Color.red);
+                    Debug.DrawRay(raystart, agent.transform.forward * m_pathfindingDistance, Color.red);
                     agent.velocity = Vector3.zero;
                     return;
                 }
                 else
                 {
-                    Debug.DrawRay(agent.transform.position, agent.transform.forward * m_pathfindingDistance, Color.green);
+                    Debug.DrawRay(raystart, agent.transform.forward * m_pathfindingDistance, Color.green);
                 }
 
                 // check incalculate path
                 var path = agent.path;
-                if (!agent.CalculatePath(agent.transform.position + agent.transform.forward * m_pathfindingDistance, path))
+                if (!agent.CalculatePath(raystart + agent.transform.forward * m_pathfindingDistance, path))
                 {
                     agent.velocity = Vector3.zero;
                     return;
                 }
 
                 // velocity
-                agent.velocity = agent.transform.forward * m_speed * axisMag;
+                var moveSpeed = Mathf.Lerp(m_speedAtSlow, m_speedAtFast, axisMag);
+                agent.velocity = agent.transform.forward * moveSpeed * axisMag;
             }
         }
     }

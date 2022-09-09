@@ -13,6 +13,27 @@ namespace Shotake
         [SerializeField] GameObject m_plane;
         [SerializeField] Vector2 m_size;
 
+        private void Reset()
+        {
+            if (m_plane) Destroy(m_plane);
+            m_plane = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            m_plane.name = "Plane";
+            m_plane.transform.parent = transform;
+            m_plane.isStatic = true;
+            m_plane.GetComponent<Renderer>().material = new Material(Shader.Find("Shotake/WorldPlane"));
+            SetSize(10, 10);
+        }
+
+        void SetSize(float x, float y)
+        {
+            m_size = new Vector2(x, y);
+            transform.localScale = Vector3.one;
+            if (m_plane)
+            {
+                m_plane.transform.localScale = new Vector3(x, 0.1f, y);
+            }
+        }
+
 #if UNITY_EDITOR
         [CustomEditor(typeof(MapFloor))]
         class MapFloorEditor : Editor
@@ -28,17 +49,14 @@ namespace Shotake
                 float y = EditorGUILayout.DelayedFloatField("Size Y", target.m_size.y);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    target.m_size = new Vector2(x, y);
-                    target.transform.localScale = Vector3.one;
-                    target.m_plane.transform.localScale = new Vector3(x, 0.1f, y);
+                    target.SetSize(x, y);
+                    EditorUtility.SetDirty(target);
                 }
 
-                if (!NavMeshBuilder.isRunning && GUILayout.Button("Build Navmesh"))
+                if (!NavMeshBuilder.isRunning && GUILayout.Button("Build Navmesh (Enigine Shortcut)"))
                 {
                     NavMeshBuilder.BuildNavMeshAsync();
                 }
-
-                EditorUtility.SetDirty(target);
             }
         }
 #endif

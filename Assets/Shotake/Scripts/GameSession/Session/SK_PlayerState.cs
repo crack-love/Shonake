@@ -8,7 +8,7 @@ namespace Shotake
 {
     // 스테이지 세션 플레이어 상태
     // 카드, 레벨, 헤드/바디 ...
-    internal class StagePlayerState
+    internal class SK_PlayerState : PlayerState
     {
         public float m_hp;
         public float m_exp;

@@ -1,4 +1,4 @@
-﻿Shader "Shotake/Orthographic/SpriteOutlinedAbsolutePixel"
+﻿Shader "Shotake/Orthographic/SpriteOutlinedAbsolute(Not work reliably)"
 {
     Properties
     {

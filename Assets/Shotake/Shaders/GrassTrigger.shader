@@ -1,5 +1,6 @@
 ﻿Shader "Shotake/GrassTrigger"
 {
+    // laydown with trigger collider using by property buffer
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}

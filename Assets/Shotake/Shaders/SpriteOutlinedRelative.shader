@@ -1,4 +1,4 @@
-﻿Shader "Shotake/Orthographic/SpriteOutlinedObjectRelative"
+﻿Shader "Shotake/Orthographic/SpriteOutlinedRelative"
 {
     Properties
     {
