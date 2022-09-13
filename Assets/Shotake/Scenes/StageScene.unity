@@ -2162,8 +2162,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 502967927}
-  - component: {fileID: 502967929}
   - component: {fileID: 502967928}
+  - component: {fileID: 502967929}
   m_Layer: 0
   m_Name: StageUI
   m_TagString: Untagged
@@ -2210,9 +2210,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 502967926}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b83e44e67b8a3644f941cdf160a6eebd, type: 3}
+  m_Script: {fileID: 11500000, guid: a9c10c8b3be746643995b4ca52a7bc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_objects:
+  - {fileID: 630968510}
 --- !u!1 &508449450
 GameObject:
   m_ObjectHideFlags: 0
@@ -2581,11 +2583,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 630968508}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ee214f554eed9549b0c8dbf83437a54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_uIObjectID: 0
   m_range: 0.5
   m_threshold: 0.05
   m_borderImage: {fileID: 1843026544}
@@ -2797,6 +2800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eea158eedb532d8419dbb398810a6228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_index: 0
 --- !u!1 &786130783
 GameObject:
   m_ObjectHideFlags: 0
@@ -3593,6 +3597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eea158eedb532d8419dbb398810a6228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_index: 0
 --- !u!1 &907019520
 GameObject:
   m_ObjectHideFlags: 0
@@ -8382,7 +8387,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1914623343}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.2622861, y: 33.836872, z: -24.313486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
