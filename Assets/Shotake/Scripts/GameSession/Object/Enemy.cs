@@ -83,7 +83,7 @@ namespace Assets
             {
                 if (m_agent)
                 {
-                    var p = GameManager.Instance.Player;
+                    var p = StageGameManager.Instance.Player;
                     if (p)
                     {
                         m_agent.SetDestination(p.transform.position);

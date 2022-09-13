@@ -12,6 +12,17 @@ namespace Shotake
     {
         public float m_hp;
         public float m_exp;
+        public float m_expMax;
+
+        public float Exp
+        {
+            get => m_exp;
+        }
+
+        public float MaxExp
+        {
+            get => m_expMax;
+        }
 
         public float HP
         {

@@ -1,17 +1,25 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Shotake
 {
     [DefaultExecutionOrder(-1)]
-    abstract class UIObject : MonoBehaviour
+    class UIObject : MonoBehaviour
     {
-        int m_index = 0;
+        [SerializeField] int m_uiObjectID = 0;
 
-        public int Index => m_index;
+        public int UIObjectID => m_uiObjectID;
 
-        protected void Awake()
+#if UNITY_EDITOR
+        private void Reset()
         {
-            m_index = UIManager.Instance.AddObject(this);
+            m_uiObjectID = UIManager.Instance.AddObjectPersistant(this);
         }
+
+        internal void SetUIObjectID(int v)
+        {
+            throw new NotImplementedException();
+        }
+#endif
     }
 }

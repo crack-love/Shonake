@@ -28,7 +28,7 @@ namespace Shotake
         {
             if (!m_player)
             {
-                m_player = GameManager.Instance.Player as SK_Player;
+                m_player = StageGameManager.Instance.Player as SK_Player;
                 if (m_player)
                 {
                     m_angle = m_player.transform.rotation.eulerAngles.y;

@@ -23,7 +23,7 @@ namespace Shotake
         {
             if (!m_playerTrans)
             {
-                var p = GameManager.Instance.Player;
+                var p = StageGameManager.Instance.Player;
                 if (p)
                 {
                     m_playerTrans = p.transform;

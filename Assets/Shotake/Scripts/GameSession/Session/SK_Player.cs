@@ -14,6 +14,8 @@ namespace Shotake
     [RequireComponent(typeof(NavMeshAgent))]
     class SK_Player : Player
     {
+        // has head, tail!
+
         public SnakeTail m_tailPrefab;
         public Transform m_raycastPosition;
 

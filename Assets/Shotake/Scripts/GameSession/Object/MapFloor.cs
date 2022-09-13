@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityCommon;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.AI;
@@ -8,10 +9,12 @@ namespace Shotake
 {
     // plane map basis floor
     // seamless texture material
-    class MapFloor : MonoBehaviour
+    class MapFloor : MonobehaviourSingletone<MapFloor> 
     {
         [SerializeField] GameObject m_plane;
         [SerializeField] Vector2 m_size;
+
+        public Vector2 MapSize => m_size;
 
         private void Reset()
         {

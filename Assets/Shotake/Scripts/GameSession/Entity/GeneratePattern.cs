@@ -19,7 +19,7 @@ namespace Shotake
         public AnimationCurve RangeCurveRandomMax;
 
         public bool isAngleCurveRandom;
-        public AnimationCurve AngleCurve;
+        public AnimationCurve AngleCurve01Degree;
         public AnimationCurve AngleCurveRandomMax;
 
         /// <summary>
@@ -27,6 +27,9 @@ namespace Shotake
         /// </summary>
         public AnimationCurve CountCurve;
 
+        /// <summary>
+        /// count as per frame
+        /// </summary>
         public void GetTick(in float currTime, out float range, out float angle, out float count)
         {
             if (isRangeCurveRandom)
@@ -48,7 +51,7 @@ namespace Shotake
 
             if (isAngleCurveRandom)
             {
-                var min = AngleCurve.Evaluate(currTime);
+                var min = AngleCurve01Degree.Evaluate(currTime);
                 var max = AngleCurveRandomMax.Evaluate(currTime);
                 if (min > max)
                 {
@@ -60,7 +63,7 @@ namespace Shotake
             }
             else
             {
-                angle = AngleCurve.Evaluate(currTime) * 360f;
+                angle = AngleCurve01Degree.Evaluate(currTime) * 360f;
             }
 
             count = CountCurve.Evaluate(currTime) * TimeManager.Instance.DeltaTime;
