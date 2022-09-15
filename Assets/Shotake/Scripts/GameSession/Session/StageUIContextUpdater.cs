@@ -31,7 +31,7 @@ namespace Shotake
             {
                 var currWave = stageState.CurrentWaveIndex;
                 var maxWave = stageEntity.Waves.Count;
-                var waveTextUi = UIManager.Instance.GetObjectByName("WaveText");
+                var waveTextUi = UIManager.Instance.GetObject("WaveText");
                 if (waveTextUi)
                 {
                     var waveTextUiCmp = waveTextUi.GetComponent<TextMeshProUGUI>();
@@ -48,9 +48,9 @@ namespace Shotake
             {
                 var curExp = playerState.Exp;
                 var maxExp = playerState.MaxExp;
-                var expBarBackUi = UIManager.Instance.GetObjectByName("ExpBarBack");
-                var expBarFillUi = UIManager.Instance.GetObjectByName("ExpBarFill");
-                var expBarTextUi = UIManager.Instance.GetObjectByName("ExpBarText");
+                var expBarBackUi = UIManager.Instance.GetObject("ExpBarBack");
+                var expBarFillUi = UIManager.Instance.GetObject("ExpBarFill");
+                var expBarTextUi = UIManager.Instance.GetObject("ExpBarText");
                 if (expBarBackUi && expBarFillUi && expBarTextUi)
                 {
                     var backWidth = expBarBackUi.GetComponent<RectTransform>().rect.width;

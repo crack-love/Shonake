@@ -13,11 +13,15 @@ namespace Shotake
 {
     interface IUIManager
     {
-        UIObject GetObjectByName(string name);
+        T GetObject<T>() where T : class;
 
-        UIObject GetObjectByID(int id);
+        T GetObject<T>(string name) where T : class;
 
-        T GetObjectByType<T>() where T : class;
+        T GetObject<T>(int id) where T : class;
+
+        UIObject GetObject(string name);
+
+        UIObject GetObject(int id);
 
 #if UNITY_EDITOR
         int AddObjectPersistant(UIObject o);
@@ -36,7 +40,7 @@ namespace Shotake
         /// <summary>
         /// Name is UnityEngine Object's name
         /// </summary>
-        public UIObject GetObjectByName(string name)
+        public UIObject GetObject(string name)
         {
             foreach (UIObject o in m_objects)
             {
@@ -48,7 +52,7 @@ namespace Shotake
             return null;
         }
 
-        public UIObject GetObjectByID(int id)
+        public UIObject GetObject(int id)
         {
             if (id < m_objects.Count)
             {
@@ -60,11 +64,37 @@ namespace Shotake
             }
         }
 
-        public T GetObjectByType<T>() where T : class
+        public T GetObject<T>() where T : class
         {
             foreach (UIObject o in m_objects)
             {
                 if (o && o is T t)
+                {
+                    return t;
+                }
+            }
+            return null;
+        }
+
+        public T GetObject<T>(string name) where T : class
+        {
+            for (int i = 0; i< m_objects.Count; ++i)
+            {
+                var o = m_objects[i];
+                if (o && o.name == name && o is T t)
+                {
+                    return t;
+                }
+            }
+            return null;
+        }
+
+        public T GetObject<T>(int id) where T : class
+        {
+            for (int i = 0; i < m_objects.Count; ++i)
+            {
+                var o = m_objects[i];
+                if (o && o.UIObjectID == id && o is T t)
                 {
                     return t;
                 }
@@ -95,7 +125,9 @@ namespace Shotake
             EditorUtility.SetDirty(this);
             return false;
         }
+#endif
 
+#if UNITY_EDITOR
         [CustomEditor(typeof(UIManager))]
         class UIObjectManagerEditor : Editor
         {
@@ -192,9 +224,9 @@ namespace Shotake
 
                 if (GUILayout.Button("Regist All Child UIObjects"))
                 {
-                    foreach (var o in target.GetComponentsInChildren<UIObject>())
+                    foreach (var o in target.GetComponentsInChildren<UIObject>(true))
                     {
-                        if (target.GetObjectByID(o.UIObjectID) != o)
+                        if (target.GetObject(o.UIObjectID) != o)
                         {
                             target.AddObjectPersistant(o);
                         }

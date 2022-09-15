@@ -14,13 +14,15 @@ namespace Shotake
 
         protected void Awake()
         {
+#if UNITY_EDITOR
             EditorAwake();
+#endif
         }
 
 #if UNITY_EDITOR
         private void EditorAwake()
         {
-            if (UIManager.Instance.GetObjectByID(m_uIObjectID) != this)
+            if (UIManager.Instance.GetObject(m_uIObjectID) != this)
             {
                 m_uIObjectID = UIManager.Instance.AddObjectPersistant(this);
             }

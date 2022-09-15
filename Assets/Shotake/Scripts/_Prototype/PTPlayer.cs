@@ -10,12 +10,12 @@ namespace Shotake
     class PTPlayer : MonobehaviourSingletone<PTPlayer>
     {
         public float speed;
-        Joystick joystick;
+        UIJoystick joystick;
         NavMeshAgent agent;
 
         private void Awake()
         {
-            joystick = FindObjectOfType<Joystick>();
+            joystick = FindObjectOfType<UIJoystick>();
             agent = GetComponent<NavMeshAgent>();
         }
 

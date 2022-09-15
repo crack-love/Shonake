@@ -63,7 +63,7 @@ namespace Shotake
             // fail
             if (m_playerState.HP <= 0)
             {
-                var failPanel = UIManager.Instance.GetObjectByName("FailPanel");
+                var failPanel = UIManager.Instance.GetObject("FailPanel");
                 TimeManager.Instance.TimeScale = 0;
 
                 if (failPanel)
@@ -77,7 +77,7 @@ namespace Shotake
             // clear
             else
             {
-                var clearPanel = UIManager.Instance.GetObjectByName("ClearPanel");
+                var clearPanel = UIManager.Instance.GetObject("ClearPanel");
                 TimeManager.Instance.TimeScale = 0;
 
                 if (clearPanel)

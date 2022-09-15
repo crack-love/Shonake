@@ -20,7 +20,7 @@ namespace Shotake
         [SerializeField] float m_rotSpeedAtSlow = 0;
         [SerializeField] float m_rotSpeedAtFast = 180;
 
-        Joystick m_joystick;
+        UIJoystick m_joystick;
         SK_Player m_player;
         float m_angle;
 
@@ -35,7 +35,7 @@ namespace Shotake
                 }
             }
 
-            if (!m_joystick) m_joystick = UIManager.Instance.GetObjectByType<Joystick>();
+            if (!m_joystick) m_joystick = UIManager.Instance.GetObject<UIJoystick>();
         }
 
         private void Update()
