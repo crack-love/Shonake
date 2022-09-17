@@ -17,7 +17,6 @@ namespace Shotake
             base.Awake();
 
             UITool.LinkButtonOnClick("ProfileButton", OnProfileButtonClicked);
-            UITool.LinkButtonOnClick("RankButton", OnRankButtonClicked);
             UITool.LinkButtonOnClick("StageButton", OnStageButtonClicked);
             UITool.LinkButtonOnClick("SettingButton", OnSettingButtonClicked);
 
@@ -25,7 +24,6 @@ namespace Shotake
             GameModeManager.Instance.DisableMode<MainSceneProfileView>();
             GameModeManager.Instance.DisableMode<MainSceneQuitView>();
             GameModeManager.Instance.DisableMode<MainSceneSettingView>();
-            GameModeManager.Instance.DisableMode<MainSceneRankView>();
             GameModeManager.Instance.DisableMode<MainSceneStageView>();
         }
 
@@ -41,15 +39,6 @@ namespace Shotake
         public void OnProfileButtonClicked()
         {
             var v = GameModeManager.Instance.GetMode<MainSceneProfileView>();
-            if (v != null)
-            {
-                GameModeManager.Instance.SwitchMode(this, v);
-            }
-        }
-
-        public void OnRankButtonClicked()
-        {
-            var v = GameModeManager.Instance.GetMode<MainSceneRankView>();
             if (v != null)
             {
                 GameModeManager.Instance.SwitchMode(this, v);
