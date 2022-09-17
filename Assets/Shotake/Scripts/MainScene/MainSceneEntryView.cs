@@ -20,6 +20,13 @@ namespace Shotake
             UITool.LinkButtonOnClick("RankButton", OnRankButtonClicked);
             UITool.LinkButtonOnClick("StageButton", OnStageButtonClicked);
             UITool.LinkButtonOnClick("SettingButton", OnSettingButtonClicked);
+
+            // execlusive setting
+            GameModeManager.Instance.DisableMode<MainSceneProfileView>();
+            GameModeManager.Instance.DisableMode<MainSceneQuitView>();
+            GameModeManager.Instance.DisableMode<MainSceneSettingView>();
+            GameModeManager.Instance.DisableMode<MainSceneRankView>();
+            GameModeManager.Instance.DisableMode<MainSceneStageView>();
         }
 
         public void OnSettingButtonClicked()

@@ -42,8 +42,14 @@ namespace Shotake
             {
                 if (modes[i] is GameMode m)
                 {
-                    m_modeDic.Add(modes[i].GetType(), m);
-                    m.SetRegisted();
+                    if (m_modeDic.TryAdd(modes[i].GetType(), m))
+                    {
+                        m.SetRegisted();
+                    }
+                    else
+                    {
+                        Debug.LogError(modes[i].GetType().Name + " type duplicated");
+                    }
                 }
             }
         }

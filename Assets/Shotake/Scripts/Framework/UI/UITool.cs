@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityCommon;
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Events;
 #endif
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Shotake
@@ -22,9 +16,13 @@ namespace Shotake
             {
                 b.OnClick.AddListener(call);
             }
+            else
+            {
+                Debug.LogError("Can't Find " + buttonName + ". Link Failed");
+            }
         }
 
-        [Conditional("UNITY_EDITOR")]
+#if UNITY_EDITOR
         public static void LinkButtonOnClickPermenant(string buttonName, UnityAction call)
         {
             var b = UIObjectManager.Instance.GetObject<UIButton>(buttonName);
@@ -33,6 +31,7 @@ namespace Shotake
                 UnityEventTools.AddPersistentListener(b.OnClick, call);
                 EditorUtility.SetDirty(b);
             }
-        }
+        } 
+#endif
     }
 }
