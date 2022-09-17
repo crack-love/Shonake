@@ -2,8 +2,16 @@
 
 namespace Shotake
 {
-    class MainSceneQuitMode : GameMode
+    class MainSceneQuitView : GameModeView
     {
+        private new void Awake()
+        {
+            base.Awake();
+
+            UITool.LinkButtonOnClick("QuitSubmitButton", OnSubmitButtonClicked);
+            UITool.LinkButtonOnClick("QuitCancelButton", OnCancelButtonClicked);
+        }
+
         public override IEnumerator EnableMode()
         {
             gameObject.SetActive(true);
@@ -23,10 +31,10 @@ namespace Shotake
 
         void OnCancelButtonClicked()
         {
-            var m = GameModeManager.Instance.GetMode<MainSceneEntryMode>();
+            var m = GameModeManager.Instance.GetMode<MainSceneEntryView>();
             if (m != null)
             {
-                GameModeManager.Instance.SwitchActiveMode(this, m);
+                GameModeManager.Instance.SwitchMode(this, m);
             }
         }
     }

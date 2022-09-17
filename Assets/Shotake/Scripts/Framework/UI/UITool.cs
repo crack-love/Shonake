@@ -17,7 +17,7 @@ namespace Shotake
     {
         public static void LinkButtonOnClick(string buttonName, UnityAction call)
         {
-            var b = UIManager.Instance.GetObject<UIButton>(buttonName);
+            var b = UIObjectManager.Instance.GetObject<UIButton>(buttonName);
             if (b)
             {
                 b.OnClick.AddListener(call);
@@ -27,7 +27,7 @@ namespace Shotake
         [Conditional("UNITY_EDITOR")]
         public static void LinkButtonOnClickPermenant(string buttonName, UnityAction call)
         {
-            var b = UIManager.Instance.GetObject<UIButton>(buttonName);
+            var b = UIObjectManager.Instance.GetObject<UIButton>(buttonName);
             if (b)
             {
                 UnityEventTools.AddPersistentListener(b.OnClick, call);

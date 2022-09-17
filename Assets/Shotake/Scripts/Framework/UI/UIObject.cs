@@ -1,38 +1,35 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using UnityCommon;
+using System;
+using Codice.CM.Triggers;
 
 namespace Shotake
 {
-    [DefaultExecutionOrder(-1)]
-    [ExecuteAlways]
-    class UIObject : MonoBehaviour
+    interface IUIObjectIDSetTarget
     {
-        [SerializeField, ReadOnly] int m_uIObjectID = 0;
+        void SetObjectID(int newID);
+    }
+
+    [DefaultExecutionOrder(UIObjectManager.ChildExecutionOrder)]
+    class UIObject : MonoBehaviour, IUIObjectIDSetTarget
+    {
+        int m_uIObjectID = 0;
 
         public int UIObjectID => m_uIObjectID;
 
+        void IUIObjectIDSetTarget.SetObjectID(int newID)
+        {
+            m_uIObjectID = newID;
+        }
+
         protected void Awake()
         {
-#if UNITY_EDITOR
-            EditorAwake();
-#endif
-        }
-
-#if UNITY_EDITOR
-        private void EditorAwake()
-        {
-            if (UIManager.Instance.GetObject(m_uIObjectID) != this)
+            var o = UIObjectManager.Instance.GetObject(m_uIObjectID);
+            if (o != this)
             {
-                m_uIObjectID = UIManager.Instance.AddObjectPersistant(this);
+                UIObjectManager.Instance.RegistObject(this);
             }
         }
-
-        public void SetUIObjectID(int v)
-        {
-            m_uIObjectID = v;
-            EditorUtility.SetDirty(this);
-        }
-#endif
     }
 }

@@ -8,19 +8,39 @@ using UnityEngine;
 
 namespace Shotake
 {
-    // update나 코루틴이 있을 수 있으므로 모노비해비어로 한다
+    [DefaultExecutionOrder(GameModeManager.ChildExecutionOrder)]
     abstract class GameMode : MonoBehaviour
     {
-        public virtual IEnumerator EnableMode() { return null; }
-
-        public virtual IEnumerator DisableMode() { return null; }
-
-#if UNITY_EDITOR
-        protected void Reset()
+        public virtual IEnumerator EnableMode() 
         {
-            name = GetType().Name;
-            GameModeManager.Instance.RegistMode(this);
+            return null; 
         }
+
+        public virtual IEnumerator DisableMode() 
+        {
+            return null; 
+        }
+
+        bool m_isRegisted = false;
+
+        public void SetRegisted()
+        {
+            m_isRegisted = true;
+        }
+
+        protected void Awake()
+        {
+#if UNITY_EDITOR
+            // ensure manager to be instanced
+            var _ = GameModeManager.Instance;
+            bool __ = _.Equals(null);
+
+            if (!m_isRegisted)
+            {
+                Debug.LogError("Found Unrgisted Mode " + GetType().Name + " (It will be destroyed)");
+                Destroy(gameObject);
+            }
 #endif
+        }
     }
 }

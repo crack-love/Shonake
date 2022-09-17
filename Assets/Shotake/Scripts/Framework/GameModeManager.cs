@@ -9,65 +9,128 @@ using UnityEditor;
 
 namespace Shotake
 {
-    sealed class GameModeManager : MonoBehaviourSingletoneAutoGenerate<GameModeManager>
+    interface IGameModeManager
     {
-        [SerializeField] List<GameMode> m_modes = new List<GameMode>();
+        bool IsLoaded<T>() where T : GameMode;
 
-        public T GetMode<T>(bool autoGenerate = true) where T : GameMode
+        T GetMode<T>() where T : GameMode;
+
+        T GetOrLoadMode<T>() where T : GameMode;
+
+        void EnableMode<T>() where T : GameMode;
+
+        void DisableMode<T>() where T : GameMode;
+
+        void SwitchMode(GameMode off, GameMode on);
+
+        void SwitchMode<TSrc, TDsr>() where TSrc : GameMode where TDsr : GameMode;
+    }
+
+    [DefaultExecutionOrder(ExecutionOrder)]
+    sealed class GameModeManager : MonoBehaviourSingletoneAutoGenerate<GameModeManager, IGameModeManager>, IGameModeManager
+    {
+        readonly Dictionary<Type, GameMode> m_modeDic = new Dictionary<Type, GameMode>();
+
+        public const int ExecutionOrder = -2;
+        public const int ChildExecutionOrder = ExecutionOrder + 1;
+
+        private void Awake()
         {
-            foreach(var mode in m_modes)
+            // load all modes in scene
+            var modes = FindObjectsOfType(typeof(GameMode), true);
+            for (int i = 0; i < modes.Length; ++i)
             {
-                if (mode is T t)
+                if (modes[i] is GameMode m)
                 {
-                    return t;
+                    m_modeDic.Add(modes[i].GetType(), m);
+                    m.SetRegisted();
                 }
             }
+        }
 
-            // create new object
-            if (autoGenerate)
+        public bool IsLoaded<T>() where T : GameMode
+        {
+            return m_modeDic.ContainsKey(typeof(T));
+        }
+
+        public T GetMode<T>() where T : GameMode
+        {
+            if (m_modeDic.ContainsKey(typeof(T)))
             {
-                GameObject o = new GameObject(typeof(T).Name);
-                var m = o.AddComponent<T>();
-                m_modes.Add(m);
-                return m;
+                return (T)m_modeDic[typeof(T)];
             }
             else
             {
-                Debug.LogError("Not exist Mode " + typeof(T).Name);
                 return null;
             }
         }
 
-        public void SwitchActiveMode(GameMode src, GameMode dst)
+        public T GetOrLoadMode<T>() where T : GameMode
         {
-            StartCoroutine(SwitchActiveModeCoroutine(src, dst));
+            if (m_modeDic.ContainsKey(typeof(T)))
+            {
+                return (T)m_modeDic[typeof(T)];
+            }
+            else
+            {
+                GameObject o = new GameObject(typeof(T).Name);
+                var m = o.AddComponent<T>();
+                m_modeDic.Add(typeof(T), m);
+                m.SetRegisted();
+                return m;
+            }
+        }
+        public void SwitchMode(GameMode off, GameMode on)
+        {
+            if (on != null && off != null)
+            {
+                StartCoroutine(SwitchModeCoroutine(off, on));
+            }
         }
 
-        IEnumerator SwitchActiveModeCoroutine(GameMode src, GameMode dst)
+        public void SwitchMode<TSrc, TDst>() where TSrc : GameMode where TDst : GameMode
+        {
+            var src = GetMode<TSrc>();
+            var dst = GetMode<TDst>();
+            if (src != null && dst != null)
+            {
+                StartCoroutine(SwitchModeCoroutine(src, dst));
+            }
+        }
+
+        IEnumerator SwitchModeCoroutine(GameMode src, GameMode dst)
         {
             yield return src.DisableMode();
             yield return dst.EnableMode();
         }
 
-#if UNITY_EDITOR
-        public void RegistMode(GameMode src)
+        public void EnableMode<T>() where T : GameMode
         {
-            var type = src.GetType();
-
-            foreach(var m in m_modes)
+            var mode = GetMode<T>();
+            if (mode != null)
             {
-                if (m != null && m.GetType() == type)
-                {
-                    Debug.LogError(src.GetType().Name + " Duplicated, Destroying last one");
-                    DestroyImmediate(src);
-                    EditorUtility.SetDirty(this);
-                    return;
-                }
+                StartCoroutine(EnableModeCoroutine(mode));
             }
-            m_modes.Add(src);
-            EditorUtility.SetDirty(this);
         }
-#endif
+
+        IEnumerator EnableModeCoroutine(GameMode mode)
+        {
+            yield return mode.EnableMode();
+        }
+
+        public void DisableMode<T>() where T : GameMode
+        {
+            var mode = GetMode<T>();
+            if (mode != null)
+            {
+                StartCoroutine(DisableModeCoroutine(mode));
+            }
+        }
+
+        IEnumerator DisableModeCoroutine(GameMode mode)
+        {
+            yield return mode.DisableMode();
+        }
 
 #if UNITY_EDITOR
         [CustomEditor(typeof(GameModeManager))]
@@ -76,20 +139,23 @@ namespace Shotake
             public override void OnInspectorGUI()
             {
                 var target = base.target as GameModeManager;
-
-                if (target.m_modes.Count > 0)
+                
+                if (target.m_modeDic.Count > 0)
                 {
-                    for (int i = 0; i < target.m_modes.Count; ++i)
+                    foreach (var pair in target.m_modeDic)
                     {
-                        var m = target.m_modes[i];
+                        var m = pair.Value;
                         if (m == null)
                         {
-                            target.m_modes.RemoveAt(i);
-                            i -= 1;
+                            EditorGUILayout.LabelField(pair.Key.Name + " (miss)");
                         }
-                        else
+                        else if (!m)
                         {
-                            if (EditorGUILayout.LinkButton(m.GetType().Name))
+                            EditorGUILayout.LabelField(pair.Key.Name + " (invalid)");
+                        }
+                        else 
+                        {
+                            if (EditorGUILayout.LinkButton(pair.Key.Name))
                             {
                                 EditorGUIUtility.PingObject(m);
                             }

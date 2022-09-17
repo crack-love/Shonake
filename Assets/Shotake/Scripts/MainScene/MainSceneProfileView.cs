@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Shotake
 {
-    class MainSceneProfileView : GameMode
+    class MainSceneProfileView : GameModeView
     {
     }
 }

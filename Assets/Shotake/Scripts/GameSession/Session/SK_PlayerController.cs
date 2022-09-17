@@ -35,7 +35,7 @@ namespace Shotake
                 }
             }
 
-            if (!m_joystick) m_joystick = UIManager.Instance.GetObject<UIJoystick>();
+            if (!m_joystick) m_joystick = UIObjectManager.Instance.GetObject<UIJoystick>();
         }
 
         private void Update()
