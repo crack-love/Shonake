@@ -16,9 +16,10 @@ namespace Shotake
         {
             base.Awake();
 
-            UITool.LinkButtonOnClick("ProfileButton", OnProfileButtonClicked);
-            UITool.LinkButtonOnClick("StageButton", OnStageButtonClicked);
-            UITool.LinkButtonOnClick("SettingButton", OnSettingButtonClicked);
+            UITool.LinkButtonOnClick("EntryProfileButton", OnProfileButtonClicked);
+            UITool.LinkButtonOnClick("EntryStageButton", OnStageButtonClicked);
+            UITool.LinkButtonOnClick("EntrySettingButton", OnSettingButtonClicked);
+            UITool.LinkButtonOnClick("EntryQuitButton", OnQuitButtonClicked);
 
             // execlusive setting
             GameModeManager.Instance.DisableMode<MainSceneProfileView>();
@@ -27,7 +28,7 @@ namespace Shotake
             GameModeManager.Instance.DisableMode<MainSceneStageView>();
         }
 
-        public void OnSettingButtonClicked()
+        private void OnSettingButtonClicked()
         {
             var sv = GameModeManager.Instance.GetMode<MainSceneSettingView>();
             if (sv != null)
@@ -36,7 +37,7 @@ namespace Shotake
             }
         }
 
-        public void OnProfileButtonClicked()
+        private void OnProfileButtonClicked()
         {
             var v = GameModeManager.Instance.GetMode<MainSceneProfileView>();
             if (v != null)
@@ -45,7 +46,7 @@ namespace Shotake
             }
         }
 
-        public void OnStageButtonClicked()
+        private void OnStageButtonClicked()
         {
             var v = GameModeManager.Instance.GetMode<MainSceneStageView>();
             if (v != null)
@@ -54,16 +55,21 @@ namespace Shotake
             }
         }
 
+        private void OnQuitButtonClicked()
+        {
+            var qmode = GameModeManager.Instance.GetMode<MainSceneQuitView>();
+            if (qmode != null)
+            {
+                GameModeManager.Instance.SwitchMode(this, qmode);
+            }
+        }
+
         private void Update()
         {
             // quit
             if (Input.GetKey(KeyCode.Escape))
             {
-                var qmode = GameModeManager.Instance.GetMode<MainSceneQuitView>();
-                if (qmode != null)
-                {
-                    GameModeManager.Instance.SwitchMode(this, qmode);
-                }
+                OnQuitButtonClicked();
             }
         }
     }

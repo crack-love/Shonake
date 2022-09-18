@@ -19,7 +19,11 @@ namespace Shotake
 
         void EnableMode<T>() where T : GameMode;
 
+        void EnableMode<T>(T mode) where T : GameMode;
+
         void DisableMode<T>() where T : GameMode;
+
+        void DisableMode<T>(T mode) where T : GameMode;
 
         void SwitchMode(GameMode off, GameMode on);
 
@@ -136,6 +140,22 @@ namespace Shotake
         IEnumerator DisableModeCoroutine(GameMode mode)
         {
             yield return mode.DisableMode();
+        }
+
+        public void EnableMode<T>(T mode) where T : GameMode
+        {
+            if (mode != null)
+            {
+                StartCoroutine(EnableModeCoroutine(mode));
+            }
+        }
+
+        public void DisableMode<T>(T mode) where T : GameMode
+        {
+            if (mode != null)
+            {
+                StartCoroutine(DisableModeCoroutine(mode));
+            }
         }
 
 #if UNITY_EDITOR
