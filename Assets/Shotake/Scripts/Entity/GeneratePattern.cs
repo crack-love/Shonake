@@ -11,13 +11,11 @@ namespace Shotake
         [Tooltip("x=wavePercent, y=value")]
         [SerializeField] bool isRangeCurveRandom;
         [SerializeField] AnimationCurve RangeCurve;
-        [Condition("isRangeCurveRandom")]
         [SerializeField] AnimationCurve RangeCurveRandomMax;
 
         [Tooltip("x=wavePercent, y=value")]
         [SerializeField] bool isAngleCurveRandom;
         [SerializeField] AnimationCurve AngleCurve;
-        [Condition("isAngleCurveRandom")]
         [SerializeField] AnimationCurve AngleCurveRandomMax;
 
         [Tooltip("Generate count per sec")]

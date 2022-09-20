@@ -11,7 +11,8 @@ namespace Shotake
         [SerializeField] float m_viewOrder = 0;
         [SerializeField] string m_viewName = "Default Name";
         [SerializeField] float m_clearRewardScalar = 1f; // 일반 골드와 보석? 연구포인트?
-        [SerializeField] List<StageWave> m_waves = new List<StageWave>();
+        [SerializeField] Texture2D m_snapShot;
+        [SerializeField] List<StageWave> m_waves = new List<StageWave>();        
 
         public IReadOnlyList<StageWave> Waves => m_waves;
     }
@@ -31,8 +32,10 @@ namespace Shotake
     {
         [SerializeField] GeneratePattern m_pattern;
         [SerializeField] GameObject m_prefab;
+        [SerializeField] int m_countPerSecScalar = 1;
 
         public GeneratePattern Pattern => m_pattern;
         public GameObject Prefab => m_prefab;
+        public int CountPerSecScalar => m_countPerSecScalar;
     }
 }

@@ -11,13 +11,22 @@ namespace Shotake
     [DefaultExecutionOrder(GameModeManager.ChildExecutionOrder)]
     abstract class GameMode : MonoBehaviour
     {
-        public virtual IEnumerator EnableMode() 
+        bool m_isEnabled = false;
+
+        public bool IsModeEnabled
         {
-            return null; 
+            get => m_isEnabled;
+        }
+
+        public virtual IEnumerator EnableMode()
+        {
+            m_isEnabled = true;
+            return null;
         }
 
         public virtual IEnumerator DisableMode() 
         {
+            m_isEnabled = false;
             return null; 
         }
 

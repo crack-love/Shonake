@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityCommon;
 using UnityEditor;
+using UnityEditor.TerrainTools;
 using UnityEngine;
 using UnityReflection;
 
@@ -13,14 +14,15 @@ namespace Shotake
 {
     abstract class ScriptableDataCore<T> : ScriptableObject, IData<T>
     {
+        [Tooltip("Save/Loadable to IDataProvider")]
         [SerializeField] bool m_isWritable;
-        [SerializeField] string m_key;
         [SerializeField] T m_value;
 
         readonly List<IDataChangeListener<T>> m_listeners = new List<IDataChangeListener<T>>(0);
         bool m_isChanged = false;
 
-        public string Key => m_key;
+        // object's name is key
+        public string Key => name;
 
         public bool IsNeedWrite => m_isWritable && m_isChanged;
 
@@ -42,12 +44,12 @@ namespace Shotake
                             {
                                 if (o)
                                 {
-                                    l.OnDataChanged(m_key, m_value);
+                                    l.OnDataChanged(name, m_value);
                                 }
                             }
                             else
                             {
-                                l.OnDataChanged(m_key, m_value);
+                                l.OnDataChanged(name, m_value);
                             }
                         }
                     }
@@ -73,16 +75,27 @@ namespace Shotake
     [CustomEditor(typeof(ScriptableDataCore<>))]
     abstract class ScriptableDataCoreEditor : Editor
     {
-        private void OnDisable()
+        public override void OnInspectorGUI()
         {
-            var path = AssetDatabase.GetAssetPath(target);
-            var name = Path.GetFileNameWithoutExtension(path);
-            var key = serializedObject.FindProperty("m_key").stringValue;
-            if (name != key)
-            {
-                AssetDatabase.RenameAsset(path, key);
-                EditorGUIUtility.PingObject(target);
-            }
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Key"); 
+            GUILayout.Label(target.name);
+            GUILayout.EndHorizontal();
+
+            base.OnInspectorGUI();
         }
+
+        //private void OnDisable()
+        //{
+        //    // rename object name to key
+        //    var path = AssetDatabase.GetAssetPath(target);
+        //    var name = Path.GetFileNameWithoutExtension(path);
+        //    var key = serializedObject.FindProperty("m_key").stringValue;
+        //    if (name != key)
+        //    {
+        //        AssetDatabase.RenameAsset(path, key);
+        //        EditorGUIUtility.PingObject(target);
+        //    }
+        //}
     }
 }
